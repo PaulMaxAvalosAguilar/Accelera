@@ -1,0 +1,4 @@
+Add defined amount of products in a single dispatch (add 10)
+and if added is greater than current quantity display alert and what is the major quantity
+
+Cart page delete certain amount of elements which should not be more than currently added in cart
