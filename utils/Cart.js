@@ -1,9 +1,12 @@
 import { createContext, useReducer } from 'react';
+import Cookies from 'js-cookie';
 
 export const Cart = createContext();
 
 const initialState = {
-  cart: { cartItems: [] },
+  cart: Cookies.get('cart')
+    ? JSON.parse(Cookies.get('cart'))
+    : { cartItems: [], shippingAddress: {}, paymentMethod: '' },
 };
 
 function reducer(state, action) {
@@ -29,6 +32,10 @@ function reducer(state, action) {
             }
           })
         : [...state.cart.cartItems, payloadProduct];
+      Cookies.set(
+        'cart',
+        JSON.stringify({ ...state.cart, cartItems: newCartItems })
+      );
       return { ...state, cart: { ...state.cart, cartItems: newCartItems } };
     }
     case 'UPDATE_CART_ITEM_QUANTITY': {
@@ -48,13 +55,21 @@ function reducer(state, action) {
           return product;
         }
       });
+      Cookies.set(
+        'cart',
+        JSON.stringify({ ...state.cart, cartItems: newCartItems })
+      );
       return { ...state, cart: { ...state.cart, cartItems: newCartItems } };
     }
     case 'CART_REMOVE_ITEM': {
-      const cartItems = state.cart.cartItems.filter(
+      const newCartItems = state.cart.cartItems.filter(
         (item) => item.slug !== payloadProduct.slug
       );
-      return { ...state, cart: { ...state.cart, cartItems } };
+      Cookies.set(
+        'cart',
+        JSON.stringify({ ...state.cart, cartItems: newCartItems })
+      );
+      return { ...state, cart: { ...state.cart, cartItems: newCartItems } };
     }
     default:
       return state;
