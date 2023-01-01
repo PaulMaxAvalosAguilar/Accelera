@@ -7,39 +7,70 @@ const initialState = {
 };
 
 function reducer(state, action) {
+  var payloadProduct = action.payload; //Expects to receive {...product,quantity}
+
   switch (action.type) {
     case 'CARD_ADD_ITEM': {
-      const addedProduct = action.payload;
-      const productExistsInCart = state.cart.cartItems.find(
-        (item) => item.slug === addedProduct.slug
-      );
-
-      const newCartItems = productExistsInCart
+      const newCartItems = productExistsInCart(state, payloadProduct)
         ? state.cart.cartItems.map((product) => {
-            if (product.name === addedProduct.name) {
-              var totalQuantity = product.quantity + addedProduct.quantity;
-              if (product.countInStock < totalQuantity) {
-                alert('Sorry. Product is out of Stock');
-                return product;
+            if (product.name === payloadProduct.name) {
+              var quantityToAdd = product.quantity + payloadProduct.quantity;
+              if (stockIsAvailable(product, quantityToAdd)) {
+                var productToBeAddedToCart = { ...payloadProduct };
+                productToBeAddedToCart.quantity = quantityToAdd;
+                return productToBeAddedToCart;
               }
-              addedProduct.quantity = totalQuantity;
-              return addedProduct;
+              alert(
+                `Sorry. Product is out of Stock, max Stock ${product.countInStock}`
+              );
+              return product;
             } else {
               return product;
             }
           })
-        : [...state.cart.cartItems, addedProduct];
+        : [...state.cart.cartItems, payloadProduct];
+      return { ...state, cart: { ...state.cart, cartItems: newCartItems } };
+    }
+    case 'UPDATE_CART_ITEM_QUANTITY': {
+      const newCartItems = state.cart.cartItems.map((product) => {
+        if (product.name === payloadProduct.name) {
+          var quantityToAdd = payloadProduct.quantity;
+          if (stockIsAvailable(product, quantityToAdd)) {
+            var productToBeAddedToCart = { ...payloadProduct };
+            productToBeAddedToCart.quantity = quantityToAdd;
+            return productToBeAddedToCart;
+          }
+          alert(
+            `Sorry. Product is out of Stock, max Stock ${product.countInStock}`
+          );
+          return product;
+        } else {
+          return product;
+        }
+      });
       return { ...state, cart: { ...state.cart, cartItems: newCartItems } };
     }
     case 'CART_REMOVE_ITEM': {
       const cartItems = state.cart.cartItems.filter(
-        (item) => item.slug !== action.payload.slug
+        (item) => item.slug !== payloadProduct.slug
       );
       return { ...state, cart: { ...state.cart, cartItems } };
     }
     default:
       return state;
   }
+}
+
+function productExistsInCart(state, product) {
+  var productExistsInCart = state.cart.cartItems.find(
+    (item) => item.slug === product.slug
+  );
+
+  return productExistsInCart;
+}
+
+function stockIsAvailable(product, totalQuantity) {
+  return product.countInStock < totalQuantity ? false : true;
 }
 
 export function CartProvider({ children }) {
