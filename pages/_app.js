@@ -1,10 +1,16 @@
 import '../styles/globals.css';
+import { SessionProvider } from 'next-auth/react';
 import { CartProvider } from '../utils/Cart';
 
-export default function App({ Component, pageProps }) {
+export default function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
-    <CartProvider>
-      <Component {...pageProps} />
-    </CartProvider>
+    <SessionProvider session={session}>
+      <CartProvider>
+        <Component {...pageProps} />
+      </CartProvider>
+    </SessionProvider>
   );
 }
