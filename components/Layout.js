@@ -47,8 +47,8 @@ export default function Layout({ title, children }) {
               ) : session?.user ? (
                 session.user.name
               ) : (
-                <Link href="/login">
-                  <a className="p-2">Login</a>
+                <Link href="/login" className="p-2">
+                  Login
                 </Link>
               )}
             </div>

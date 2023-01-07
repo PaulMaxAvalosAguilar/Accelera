@@ -1,8 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import User from '../../../models/User';
-import db from '../../../utils/db';
+import { pool } from '../../../utils/db';
 
 export default NextAuth({
   session: {
@@ -23,18 +22,21 @@ export default NextAuth({
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
-        await db.connect();
-        const user = await User.findOne({
-          email: credentials.email,
-        });
-        await db.disconnect();
-        if (user && bcryptjs.compareSync(credentials.password, user.password)) {
+        const [results] = await pool.execute(
+          `SELECT * FROM new_schema.users where email = ?`,
+          [credentials.email]
+        );
+
+        if (
+          results.length &&
+          bcryptjs.compareSync(credentials.password, results[0].password)
+        ) {
           return {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
+            _id: results[0]._id,
+            name: results[0].name,
+            email: results[0].email,
             image: 'f',
-            isAdmin: user.isAdmin,
+            isAdmin: results[0].isAdmin,
           };
         }
         throw new Error('Invalid email or password');
