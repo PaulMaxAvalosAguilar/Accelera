@@ -12,6 +12,7 @@ const initialState = {
 function reducer(state, action) {
   var payloadProduct = action.payload; //Expects to receive {product}
   var shippingAdress = action.payload; //Expects to receive {shippingAdress}
+  var selectedPaymentMethod = action.payload; //Expects to receive {selectedPaymentMethod}
 
   switch (action.type) {
     case 'CARD_ADD_ITEM': {
@@ -92,7 +93,6 @@ function reducer(state, action) {
           },
         })
       );
-      console.log(JSON.parse(Cookies.get('cart')));
       return {
         ...state,
         cart: {
@@ -101,6 +101,21 @@ function reducer(state, action) {
             ...state.cart.shippingAddress,
             ...shippingAdress,
           },
+        },
+      };
+    case 'SAVE_PAYMENT_METHOD':
+      Cookies.set(
+        'cart',
+        JSON.stringify({
+          ...state.cart,
+          paymentMethod: selectedPaymentMethod,
+        })
+      );
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          paymentMethod: selectedPaymentMethod,
         },
       };
     default:
