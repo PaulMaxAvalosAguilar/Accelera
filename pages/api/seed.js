@@ -23,6 +23,7 @@ export default async function handler(req, res) {
     [user.name, user.email, user.password, user.isAdmin]
   );*/
 
+  /*
   const [results] = await pool.execute(
     `SELECT * FROM new_schema.users where email = 'admin@example.com'`
   );
@@ -35,7 +36,11 @@ export default async function handler(req, res) {
 
   if (results.length) {
     console.log(results[0].name);
-  }
+  }*/
+
+  await pool.execute(`INSERT INTO products (name, slug, category, image, price, brand, rating, numReviews,
+    countInStock, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`);
+
   return res.status(200).json(results);
 }
 /*
