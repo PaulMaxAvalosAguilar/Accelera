@@ -5,6 +5,8 @@ export default async function handler(req, res) {
   const users = data.users;
   const user = users[1];
 
+  const { products } = data;
+
   /*
   const result = await pool.query(`CREATE TABLE users (
     idusers INT UNSIGNED NOT NULL AUTOINCREMENT,
@@ -38,10 +40,28 @@ export default async function handler(req, res) {
     console.log(results[0].name);
   }*/
 
-  await pool.execute(`INSERT INTO products (name, slug, category, image, price, brand, rating, numReviews,
-    countInStock, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`);
+  /*
+  products.map(async (product) => {
+    await pool.execute(
+      `INSERT INTO products (name, slug, category, image, price, brand, rating, numReviews,
+      countInStock, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      [
+        product.name,
+        product.slug,
+        product.category,
+        product.image,
+        product.price,
+        product.brand,
+        product.rating,
+        product.numReviews,
+        product.countInStock,
+        product.description,
+      ]
+    );
+  });
+  */
 
-  return res.status(200).json(results);
+  return res.status(200).json('results');
 }
 /*
 const handler = async (req, res) => {
