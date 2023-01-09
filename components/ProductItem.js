@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useContext } from 'react';
-import Link from 'next/link';
+import Link from 'next/Link';
 import Image from 'next/image';
 
 export default function ProductItem({ product, addToCartHandler }) {
