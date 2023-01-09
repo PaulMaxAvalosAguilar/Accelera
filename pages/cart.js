@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
-import { Cart } from '../utils/Cart';
+import { Cart, processes } from '../utils/Cart';
 import Layout from '../components/Layout';
 import Link from 'next/Link';
 import { XCircleIcon } from '@heroicons/react/24/solid';
 import Image from 'next/Image';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
+
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });
 
 function CartScreen() {
   const router = useRouter();
@@ -16,13 +18,13 @@ function CartScreen() {
   } = state;
 
   const removeItemHandler = (product) => {
-    dispatch({ type: 'CART_REMOVE_ITEM', payload: product });
+    dispatch({ type: processes.CART_REMOVE_ITEM, payload: product });
   };
 
   const updateCartHandler = (product, qty) => {
     var quantity = Number(qty);
     dispatch({
-      type: 'UPDATE_CART_ITEM_QUANTITY',
+      type: processes.UPDATE_CART_ITEM_QUANTITY,
       payload: { ...product, quantity },
     });
   };
@@ -67,9 +69,9 @@ function CartScreen() {
                     <td className="p-5 text-right">
                       <select
                         value={item.quantity}
-                        onChange={(e) =>
-                          updateCartHandler(item, e.target.value)
-                        }
+                        onChange={(e) => {
+                          updateCartHandler(item, e.target.value);
+                        }}
                       >
                         {[...Array(item.countInStock).keys()].map((x) => (
                           <option key={x + 1} value={x + 1}>
@@ -112,5 +114,3 @@ function CartScreen() {
     </Layout>
   );
 }
-
-export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });

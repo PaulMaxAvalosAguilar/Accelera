@@ -38,7 +38,8 @@ export default async function handler(req, res) {
 
   if (results.length) {
     console.log(results[0].name);
-  }*/
+  }
+  */
 
   /*
   products.map(async (product) => {

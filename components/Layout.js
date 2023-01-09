@@ -1,5 +1,5 @@
 //GlobalState
-import { Cart } from '../utils/Cart.js';
+import { Cart, processes } from '../utils/Cart.js';
 import { useContext } from 'react';
 //Authentication
 import { signOut, useSession } from 'next-auth/react';
@@ -7,7 +7,7 @@ import { signOut, useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 //Next
 import Head from 'next/head';
-import Link from 'next/link';
+import Link from 'next/Link';
 //GUI
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,7 +28,7 @@ export default function Layout({ title, children }) {
   }, [cart.cartItems]);
   //Event handler
   const logoutClickHandler = () => {
-    dispatch({ type: 'CART_RESET' });
+    dispatch({ type: processes.CART_RESET });
     signOut({ callbackUrl: '/login' });
   };
 

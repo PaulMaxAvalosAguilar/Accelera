@@ -1,23 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useContext } from 'react';
 import Link from 'next/link';
-import { Cart } from '../utils/Cart';
+import Image from 'next/image';
 
-export default function ProductItem({ product }) {
-  const { dispatch } = useContext(Cart);
-
-  const addToCartHandler = () => {
-    dispatch({ type: 'CARD_ADD_ITEM', payload: { ...product, quantity: 1 } });
-  };
-
+export default function ProductItem({ product, addToCartHandler }) {
   return (
     <div className="card">
       <Link href={`/product/${product.slug}`}>
-        <img
+        <Image
           src={product.image}
           alt={product.name}
+          width="960"
+          height="960"
           className="rounded shadow"
-        ></img>
+        ></Image>
       </Link>
       <div className="flex flex-col items-center justify-center p-5">
         <Link href={`/product/${product.slug}`}>
@@ -27,7 +23,9 @@ export default function ProductItem({ product }) {
         <p>${product.price}</p>
         <button
           className="primary-button"
-          onClick={addToCartHandler}
+          onClick={() => {
+            addToCartHandler(product);
+          }}
           type="button"
         >
           {' '}

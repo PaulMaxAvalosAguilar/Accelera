@@ -1,23 +1,31 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import Layout from '../../components/Layout';
-import { Cart } from '../../utils/Cart';
-import data from '../../utils/data';
+import { Cart, processes } from '../../utils/Cart';
+import { pool } from '../../utils/db';
 
-export default function ProductScreen() {
+export default function ProductScreen(props) {
+  const { product } = props;
+
   const { state, dispatch } = useContext(Cart);
-
+  /*
   const { query } = useRouter();
   const { slug } = query;
   const product = data.products.find((x) => x.slug === slug);
   if (!product) {
-    return <div>Produt Not Found</div>;
+    return  <Layout title="Product Not Found"> Product Not Found</Layout>
+  }
+  */
+  if (!product) {
+    return <Layout title="Product Not Found"> Product Not Found</Layout>;
   }
 
   const addToCartHandler = () => {
-    dispatch({ type: 'CARD_ADD_ITEM', payload: { ...product, quantity: 1 } });
+    dispatch({
+      type: processes.CARD_ADD_ITEM,
+      payload: { ...product, quantity: 1 },
+    });
   };
 
   return (
@@ -69,4 +77,27 @@ export default function ProductScreen() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { params } = context;
+  const { slug } = params;
+  /*
+  const { data: arrayOfProductOjects } = await axios.get(
+    `/api/products/${product.idProduct}`
+  );
+  const [firstProducObject] = arrayOfProductOjects;
+  */
+
+  const [arrayOfProductOjects] = await pool.execute(
+    'select * from products where products.slug = ?',
+    [slug]
+  );
+  const [firstProductObject] = arrayOfProductOjects;
+
+  return {
+    props: {
+      product: firstProductObject ? firstProductObject : null,
+    },
+  };
 }
