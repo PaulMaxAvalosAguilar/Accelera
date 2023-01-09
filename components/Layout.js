@@ -7,7 +7,7 @@ import { signOut, useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 //Next
 import Head from 'next/head';
-import Link from 'next/Link';
+import Link from 'next/link';
 //GUI
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
