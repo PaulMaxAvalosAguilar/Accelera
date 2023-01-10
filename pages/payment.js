@@ -3,7 +3,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/Layout';
-import { Cart } from '../utils/Cart';
+import { Cart, processes } from '../utils/Cart';
+
+PaymentScreen.auth = true;
 
 export default function PaymentScreen() {
   const { state, dispatch } = useContext(Cart);
@@ -26,7 +28,10 @@ export default function PaymentScreen() {
     if (!selectedPaymentMethod) {
       return toast.error('Payment method is required');
     }
-    dispatch({ type: 'SAVE_PAYMENT_METHOD', payload: selectedPaymentMethod });
+    dispatch({
+      type: processes.SAVE_PAYMENT_METHOD,
+      payload: selectedPaymentMethod,
+    });
     router.push('/placeorder');
   };
 

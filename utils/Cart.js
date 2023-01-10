@@ -36,7 +36,6 @@ function reducer(state, action) {
         'cart',
         JSON.stringify({ ...state.cart, cartItems: newCartItems })
       );
-      console.log(newCartItems);
       return { ...state, cart: { ...state.cart, cartItems: newCartItems } };
     }
     case processes.UPDATE_CART_ITEM_QUANTITY: {

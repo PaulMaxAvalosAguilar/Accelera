@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from 'next/Link';
 import React, { useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';

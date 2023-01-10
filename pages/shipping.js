@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import CheckoutWizard from '../components/CheckoutWizard.js';
 import Layout from '../components/Layout';
-import { Cart } from '../utils/Cart';
+import { Cart, processes } from '../utils/Cart';
 import { useRouter } from 'next/router';
 
 ShippingScreen.auth = true;
@@ -30,7 +30,7 @@ export default function ShippingScreen() {
 
   const submitHandler = ({ fullName, address, city, postalCode, country }) => {
     dispatch({
-      type: 'SAVE_SHIPPING_ADDRESS',
+      type: processes.SAVE_SHIPPING_ADDRESS,
       payload: { fullName, address, city, postalCode, country },
     });
     router.push('/payment');
