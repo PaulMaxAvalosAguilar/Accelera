@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { Cart, processes } from '../utils/Cart';
+import { Cart, processes } from '../utils/globalState';
 import Layout from '../components/Layout';
-import Link from 'next/Link';
+import Link from 'next/link';
 import { XCircleIcon } from '@heroicons/react/24/solid';
-import Image from 'next/Image';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 
@@ -14,18 +14,19 @@ function CartScreen() {
   const { state, dispatch } = useContext(Cart);
 
   const {
-    cart: { cartItems },
+    cartState: { cartItems },
   } = state;
 
   const removeItemHandler = (product) => {
-    dispatch({ type: processes.CART_REMOVE_ITEM, payload: product });
+    console.log;
+    dispatch({ type: processes.CART_DELETE_cartItems, payload: { product } });
   };
 
   const updateCartHandler = (product, qty) => {
     var quantity = Number(qty);
     dispatch({
-      type: processes.UPDATE_CART_ITEM_QUANTITY,
-      payload: { ...product, quantity },
+      type: processes.CART_UPDATE_cartItem_quantity,
+      payload: { product, quantity },
     });
   };
 

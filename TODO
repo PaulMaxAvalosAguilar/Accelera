@@ -10,3 +10,5 @@ Make more efficient reducer
 Compare reducer elements by id
 
 change getServerSideProps from [slug] to [id]
+
+Make database store cart if logged in

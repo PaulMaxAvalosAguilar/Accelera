@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 import { SessionProvider, useSession } from 'next-auth/react';
-import { CartProvider } from '../utils/Cart';
+import { GlobalStateProvider } from '../utils/globalState';
 import { useRouter } from 'next/router';
 
 export default function MyApp({
@@ -9,7 +9,7 @@ export default function MyApp({
 }) {
   return (
     <SessionProvider session={session}>
-      <CartProvider>
+      <GlobalStateProvider>
         {Component.auth ? (
           <Auth>
             <Component {...pageProps} />
@@ -17,7 +17,7 @@ export default function MyApp({
         ) : (
           <Component {...pageProps} />
         )}
-      </CartProvider>
+      </GlobalStateProvider>
     </SessionProvider>
   );
 }

@@ -1,7 +1,7 @@
 import Layout from '../components/Layout';
 import { useContext } from 'react';
 import ProductItem from '../components/ProductItem';
-import { Cart, processes } from '../utils/Cart';
+import { Cart, processes } from '../utils/globalState';
 import { pool } from '../utils/db';
 
 export default function Home({ arrayOfProductOjects }) {
@@ -9,8 +9,8 @@ export default function Home({ arrayOfProductOjects }) {
 
   function addToCartHandler(product) {
     dispatch({
-      type: processes.CARD_ADD_ITEM,
-      payload: { ...product, quantity: 1 },
+      type: processes.CART_ADD_cartItem,
+      payload: { product, quantity: 1 },
     });
   }
 

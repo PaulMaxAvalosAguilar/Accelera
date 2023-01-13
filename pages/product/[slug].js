@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useContext } from 'react';
 import Layout from '../../components/Layout';
-import { Cart, processes } from '../../utils/Cart';
+import { Cart, processes } from '../../utils/globalState';
 import { pool } from '../../utils/db';
 
 export default function ProductScreen(props) {
@@ -23,8 +23,8 @@ export default function ProductScreen(props) {
 
   const addToCartHandler = () => {
     dispatch({
-      type: processes.CARD_ADD_ITEM,
-      payload: { ...product, quantity: 1 },
+      type: processes.CART_ADD_cartItem,
+      payload: { product, quantity: 1 },
     });
   };
 

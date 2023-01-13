@@ -1,10 +1,11 @@
-import Link from 'next/Link';
+import Link from 'next/link';
 import React, { useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import Layout from '../components/Layout';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import getError from '../utils/error';
 
 export default function LoginScreen() {
   //GlobalState
@@ -95,8 +96,3 @@ export default function LoginScreen() {
     </Layout>
   );
 }
-
-const getError = (err) =>
-  err.response && err.response.data && err.response.data.message
-    ? err.response.data.message
-    : err.message;
