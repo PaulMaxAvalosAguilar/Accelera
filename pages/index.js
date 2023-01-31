@@ -1,11 +1,11 @@
 import Layout from '../components/Layout';
 import { useContext } from 'react';
 import ProductItem from '../components/ProductItem';
-import { Cart, processes } from '../utils/globalState';
+import { GlobalState, processes } from '../utils/globalState';
 import { pool } from '../utils/db';
 
 export default function Home({ arrayOfProductOjects }) {
-  const { dispatch } = useContext(Cart);
+  const { dispatch } = useContext(GlobalState);
 
   function addToCartHandler(product) {
     dispatch({
@@ -31,6 +31,7 @@ export default function Home({ arrayOfProductOjects }) {
 
 export async function getServerSideProps() {
   const [arrayOfProductOjects] = await pool.execute('select * from products');
+
   return {
     props: {
       arrayOfProductOjects,

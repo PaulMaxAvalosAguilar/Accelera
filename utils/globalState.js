@@ -2,11 +2,11 @@ import { createContext, useReducer } from 'react';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 
-export const Cart = createContext();
+export const GlobalState = createContext();
 
 const initialState = {
-  cartState: Cookies.get('cart')
-    ? JSON.parse(Cookies.get('cart'))
+  cartState: Cookies.get('cartState')
+    ? JSON.parse(Cookies.get('cartState'))
     : {
         cartItems: [
           //Saves Product object like follows:
@@ -51,8 +51,8 @@ const initialState = {
 export const processes = {
   CART_RESET_ALL: 1,
   CART_ADD_cartItem: 2,
-  CART_UPDATE_cartItem_quantity: 3, //jpdate cartItem quanity
-  CART_DELETE_cartItems: 4, //delete all cartItems
+  CART_UPDATE_cartItem_quantity: 3, //update cartItem quanity
+  CART_DELETE_cartItem: 4, //delete all cartItems
   CART_RESET_cartItems: 5,
   CART_CREATE_shippingAdress: 6,
   CART_UPDATE_shippingAdress: 7,
@@ -62,18 +62,16 @@ export const processes = {
   CART_UPDATE_invoiceAdress: 11,
   CART_DELETE_invoiceAdress: 12,
   CART_CLEAR_invoiceAdress: 13,
-  CART_ADD_paymentMethod: 14,
+  CART_CREATE_paymentMethod: 14,
   CART_UPDATE_paymentMethod: 15,
   CART_DELETE_paymentMethod: 16,
 };
 
 function reducer(state, action) {
-  var shippingAdress = action.payload; //Expects to receive {shippingAdress}
-  var selectedPaymentMethod = action.payload; //Expects to receive {selectedPaymentMethod}
-
+  console.log(action.payload);
   switch (action.type) {
     case processes.CART_RESET_ALL:
-      Cookies.remove('cart');
+      Cookies.remove('cartState');
       return {
         ...state,
         cartState: {
@@ -99,7 +97,7 @@ function reducer(state, action) {
         : [...state.cartState.cartItems, { ...product, quantity }];
 
       Cookies.set(
-        'cart',
+        'cartState',
         JSON.stringify({ ...state.cartState, cartItems: newCartItems })
       );
       return {
@@ -113,7 +111,7 @@ function reducer(state, action) {
         ? findProductAndUpdateQuantity(state, product, quantity)
         : [...state.cartState.cartItems, { ...product, quantity }];
       Cookies.set(
-        'cart',
+        'cartState',
         JSON.stringify({ ...state.cartState, cartItems: newCartItems })
       );
       return {
@@ -121,14 +119,13 @@ function reducer(state, action) {
         cartState: { ...state.cartState, cartItems: newCartItems },
       };
     }
-    case processes.CART_DELETE_cartItems: {
+    case processes.CART_DELETE_cartItem: {
       const { product } = action.payload; //intended payload
-      console.log(product);
       const newCartItems = state.cartState.cartItems.filter(
         (stateProduct) => stateProduct.slug !== product.slug
       );
       Cookies.set(
-        'cart',
+        'cartState',
         JSON.stringify({ ...state.cartState, cartItems: newCartItems })
       );
       return {
@@ -136,9 +133,23 @@ function reducer(state, action) {
         cartState: { ...state.cartState, cartItems: newCartItems },
       };
     }
-    case processes.SAVE_SHIPPING_ADDRESS:
+    case processes.CART_RESET_cartItems: {
       Cookies.set(
-        'cart',
+        'cartState',
+        JSON.stringify({
+          ...state.cartState,
+          cartItems: [],
+        })
+      );
+      return {
+        ...state,
+        cartState: { ...state.cartState, cartItems: [] },
+      };
+    }
+    case processes.CART_CREATE_shippingAdress: {
+      const shippingAdress = action.payload; //Expects to receive { fullName, address, city, postalCode, country }
+      Cookies.set(
+        'cartState',
         JSON.stringify({
           ...state.cartState,
           shippingAddress: {
@@ -156,9 +167,11 @@ function reducer(state, action) {
           },
         },
       };
-    case processes.SAVE_PAYMENT_METHOD:
+    }
+    case processes.CART_CREATE_paymentMethod: {
+      const selectedPaymentMethod = action.payload; //Expects to receive {selectedPaymentMethod}
       Cookies.set(
-        'cart',
+        'cartState',
         JSON.stringify({
           ...state.cartState,
           paymentMethod: selectedPaymentMethod,
@@ -171,6 +184,7 @@ function reducer(state, action) {
           paymentMethod: selectedPaymentMethod,
         },
       };
+    }
     default:
       return state;
   }
@@ -233,5 +247,5 @@ function stockIsAvailable(product, totalQuantity) {
 export function GlobalStateProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };
-  return <Cart.Provider value={value}>{children}</Cart.Provider>;
+  return <GlobalState.Provider value={value}>{children}</GlobalState.Provider>;
 }

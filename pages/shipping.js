@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import CheckoutWizard from '../components/CheckoutWizard.js';
 import Layout from '../components/Layout';
-import { Cart, processes } from '../utils/Cart';
+import { GlobalState, processes } from '../utils/globalState';
 import { useRouter } from 'next/router';
 
 ShippingScreen.auth = true;
@@ -15,10 +15,11 @@ export default function ShippingScreen() {
     setValue,
   } = useForm();
 
-  const { state, dispatch } = useContext(Cart);
-  const { cart } = state;
-  const { shippingAddress } = cart;
   const router = useRouter();
+
+  const { state, dispatch } = useContext(GlobalState);
+  const { cartState } = state;
+  const { shippingAddress } = cartState;
 
   useEffect(() => {
     setValue('fullName', shippingAddress.fullName);
@@ -30,7 +31,7 @@ export default function ShippingScreen() {
 
   const submitHandler = ({ fullName, address, city, postalCode, country }) => {
     dispatch({
-      type: processes.SAVE_SHIPPING_ADDRESS,
+      type: processes.CART_CREATE_shippingAdress,
       payload: { fullName, address, city, postalCode, country },
     });
     router.push('/payment');

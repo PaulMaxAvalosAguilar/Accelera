@@ -2,30 +2,22 @@ import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
 import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/Layout';
-import { Cart } from '../utils/globalState';
+import { GlobalState, processes } from '../utils/globalState';
+import getError from '../utils/error';
 
+//Authentication
 PlaceOrderScreen.auth = true;
 
 export default function PlaceOrderScreen() {
-  const { state, dispatch } = useContext(Cart);
-  const { cart } = state;
-  const { cartItems, shippingAddress, paymentMethod } = cart;
-
-  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
-
-  const itemsPrice = round2(
-    cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
-  ); // 123.4567 => 123.46
-
-  const shippingPrice = itemsPrice > 200 ? 0 : 15;
-  const taxPrice = round2(itemsPrice * 0.15);
-  const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
-
+  //Global state
+  const { state, dispatch } = useContext(GlobalState);
+  const { cartState } = state;
+  const { cartItems, shippingAddress, paymentMethod } = cartState;
+  //Router
   const router = useRouter();
   useEffect(() => {
     if (!paymentMethod) {
@@ -33,13 +25,36 @@ export default function PlaceOrderScreen() {
     }
   }, [paymentMethod, router]);
 
-  const [loading, setLoading] = useState(false);
+  //Functions
+  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
 
+  //Computed variables
+  const itemsPrice = round2(
+    cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
+  );
+  const shippingPrice = itemsPrice > 200 ? 0 : 15;
+  const taxPrice = round2(itemsPrice * 0.15);
+  const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
+
+  //State loading and actions
+  const [loading, setLoading] = useState(false);
   const placeOrderHandler = async () => {
     try {
       setLoading(true);
+      const productsArray = cartItems.map((product) => {
+        return {
+          idProduct: product.idProduct,
+          price: product.price,
+          quantity: product.quantity,
+        };
+      });
+
+      productsArray.map((product) => {
+        console.log(product);
+      });
+
       const { data } = await axios.post('/api/orders', {
-        orderItems: cartItems,
+        productsIds: productsArray,
         shippingAddress,
         paymentMethod,
         itemsPrice,
@@ -48,15 +63,10 @@ export default function PlaceOrderScreen() {
         totalPrice,
       });
       setLoading(false);
-      dispatch({ type: 'CART_CLEAR_ITEMS' });
-      Cookies.set(
-        'cart',
-        JSON.stringify({
-          ...cart,
-          cartItems: [],
-        })
-      );
-      router.push(`/order/${data._id}`);
+
+      dispatch({ type: processes.CART_RESET_cartItems });
+
+      router.push(`/order/${data}`);
     } catch (err) {
       setLoading(false);
       toast.error(getError(err));
@@ -82,7 +92,9 @@ export default function PlaceOrderScreen() {
                 {shippingAddress.country}
               </div>
               <div>
-                <Link href="/shipping">Edit</Link>
+                <Link href="/shipping" className="text-blue">
+                  Edit
+                </Link>
               </div>
             </div>
             <div className="card  p-5">
@@ -105,7 +117,7 @@ export default function PlaceOrderScreen() {
                 </thead>
                 <tbody>
                   {cartItems.map((item) => (
-                    <tr key={item._id} className="border-b">
+                    <tr key={item.idProduct} className="border-b">
                       <td>
                         <Link
                           className="flex items-center"
@@ -180,8 +192,3 @@ export default function PlaceOrderScreen() {
     </Layout>
   );
 }
-
-const getError = (err) =>
-  err.response && err.response.data && err.response.data.message
-    ? err.response.data.message
-    : err.message;

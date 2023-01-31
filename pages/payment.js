@@ -3,25 +3,26 @@ import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CheckoutWizard from '../components/CheckoutWizard';
 import Layout from '../components/Layout';
-import { Cart, processes } from '../utils/Cart';
+import { GlobalState, processes } from '../utils/globalState';
 
 PaymentScreen.auth = true;
 
 export default function PaymentScreen() {
-  const { state, dispatch } = useContext(Cart);
-  const { cart } = state;
-  const { shippingAddress, paymentMethod } = cart;
+  const { state, dispatch } = useContext(GlobalState);
+  const { cartState } = state;
+  const { shippingAddress, paymentMethod } = cartState;
 
+  //State selectedPaymentMethod and Actions
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const clickedRadioHandler = (payment) => {
+    setSelectedPaymentMethod(payment);
+  };
 
+  //Router Actions
   const router = useRouter();
-
-  useEffect(() => {
-    if (!shippingAddress.address) {
-      return router.push('/shipping');
-    }
-    setSelectedPaymentMethod(paymentMethod || '');
-  }, [paymentMethod, router, shippingAddress.address]);
+  const backHandler = () => {
+    router.push('/shipping');
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -29,19 +30,19 @@ export default function PaymentScreen() {
       return toast.error('Payment method is required');
     }
     dispatch({
-      type: processes.SAVE_PAYMENT_METHOD,
+      type: processes.CART_CREATE_paymentMethod,
       payload: selectedPaymentMethod,
     });
     router.push('/placeorder');
   };
+  //console.log(cartState);
 
-  const clickedRadioHandler = (payment) => {
-    setSelectedPaymentMethod(payment);
-  };
-
-  const backHandler = () => {
-    router.push('/shipping');
-  };
+  useEffect(() => {
+    if (!shippingAddress.address) {
+      router.push('/shipping');
+    }
+    setSelectedPaymentMethod(paymentMethod || '');
+  }, [paymentMethod, router, shippingAddress.address]);
 
   return (
     <Layout title="Payment Method">
@@ -60,7 +61,6 @@ export default function PaymentScreen() {
                 clickedRadioHandler(payment);
               }}
             />
-
             <label className="p-2" htmlFor={payment}>
               {payment}
             </label>
@@ -80,4 +80,3 @@ export default function PaymentScreen() {
     </Layout>
   );
 }
-3;

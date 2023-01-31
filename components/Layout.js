@@ -1,5 +1,5 @@
 //GlobalState
-import { Cart, processes } from '../utils/globalState.js';
+import { GlobalState, processes } from '../utils/globalState.js';
 import { useContext } from 'react';
 //Authentication
 import { signOut, useSession } from 'next-auth/react';
@@ -16,7 +16,7 @@ import { Menu } from '@headlessui/react';
 
 export default function Layout({ title, children }) {
   //GlobalState
-  const { state, dispatch } = useContext(Cart);
+  const { state, dispatch } = useContext(GlobalState);
   const { cartState } = state;
   // Authentication
   const { status, data: session } = useSession();
@@ -24,7 +24,6 @@ export default function Layout({ title, children }) {
   const [cartItemsCount, setCartItemsCount] = useState(0);
   //Lifecycle
   useEffect(() => {
-    console.log(state);
     setCartItemsCount(cartState.cartItems.reduce((a, c) => a + c.quantity, 0));
   }, [cartState.cartItems]);
   //Event handler

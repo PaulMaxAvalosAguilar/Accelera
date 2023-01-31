@@ -35,7 +35,7 @@ export default NextAuth({
             _id: results[0]._id,
             name: results[0].name,
             email: results[0].email,
-            image: 'f',
+            image: 'fa',
             isAdmin: results[0].isAdmin,
           };
         }

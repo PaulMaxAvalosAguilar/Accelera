@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Cart, processes } from '../utils/globalState';
+import { GlobalState, processes } from '../utils/globalState';
 import Layout from '../components/Layout';
 import Link from 'next/link';
 import { XCircleIcon } from '@heroicons/react/24/solid';
@@ -11,15 +11,14 @@ export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });
 
 function CartScreen() {
   const router = useRouter();
-  const { state, dispatch } = useContext(Cart);
+  const { state, dispatch } = useContext(GlobalState);
 
   const {
     cartState: { cartItems },
   } = state;
 
   const removeItemHandler = (product) => {
-    console.log;
-    dispatch({ type: processes.CART_DELETE_cartItems, payload: { product } });
+    dispatch({ type: processes.CART_DELETE_cartItem, payload: { product } });
   };
 
   const updateCartHandler = (product, qty) => {
