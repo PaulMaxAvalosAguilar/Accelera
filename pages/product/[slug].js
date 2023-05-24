@@ -2,13 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useContext } from 'react';
 import Layout from '../../components/Layout';
-import { Cart, processes } from '../../utils/globalState';
+import { GlobalState, processes } from '../../utils/globalState';
 import { pool } from '../../utils/db';
 
 export default function ProductScreen(props) {
   const { product } = props;
 
-  const { state, dispatch } = useContext(Cart);
+  const { state, dispatch } = useContext(GlobalState);
   /*
   const { query } = useRouter();
   const { slug } = query;

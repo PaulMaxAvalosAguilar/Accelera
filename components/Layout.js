@@ -48,7 +48,7 @@ export default function Layout({ title, children }) {
           <nav className="flex h-12 items-center px-4 justify-between shadow-md">
             {/*First Link */}
             <Link href="/" className="text-lg font-bold">
-              Accelera
+              EsteroidesSeguros.com
             </Link>
             {/* First block */}
             <div>
