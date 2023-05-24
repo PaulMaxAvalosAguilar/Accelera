@@ -7,7 +7,7 @@ import { pool } from '../../utils/db';
 
 export default function ProductScreen(props) {
   const { product } = props;
-
+  /* eslint-disable-next-line */
   const { state, dispatch } = useContext(GlobalState);
   /*
   const { query } = useRouter();

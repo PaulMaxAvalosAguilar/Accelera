@@ -1,10 +1,12 @@
+/* eslint-disable-next-line */
 import { pool } from '../../utils/db';
 import data from '../../utils/data';
 
 export default async function handler(req, res) {
   const users = data.users;
+  /* eslint-disable-next-line */
   const user = users[1];
-
+  /* eslint-disable-next-line */
   const { products } = data;
 
   /*
